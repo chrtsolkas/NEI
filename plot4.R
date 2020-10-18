@@ -5,7 +5,8 @@ source("import_data.R")
 # changed from 1999–2008?
 
 png("plot4.png")
-
+SCC %>%
+  filter(grepl("Coal", Short.Name))
 
 
 dev.off()
