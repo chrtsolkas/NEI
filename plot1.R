@@ -1,13 +1,33 @@
-source("import_data.R")
+# Download the zip file and unzip it only if this was not already done
+if(!file.exists("NEI.zip")) {
+  download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip", destfile = "NEI.zip")
+}
+
+if(!file.exists("Source_Classification_Code.rds")) {
+  unzip("NEI.zip") 
+}
+
+# Read the two data files if this was not already done
+if (!("NEI" %in% ls())) {
+  NEI <- readRDS("summarySCC_PM25.rds")
+  
+}
+
+if (!("SCC" %in% ls())) {
+  SCC <- readRDS("Source_Classification_Code.rds")
+  SCC$Created_Date <- as.Date(as.character(SCC$Created_Date), "%m/%d/%Y")
+  SCC$Revised_Date <- as.Date(as.character(SCC$Revised_Date), "%m/%d/%Y")
+}
 
 # Question 1:
 # Have total emissions from PM2.5 decreased in the United States from 1999 to 2008? 
 # Using the base plotting system, make a plot showing the total PM2.5 emission from 
 # all sources for each of the years 1999, 2002, 2005, and 2008.
 
-
-png("plot1.png")
 library(dplyr)
+
+png("plot1.png", height = 480, width = 640)
+
 totalEmisionsPerYear <- NEI %>%
   select(Emissions, year) %>%
   group_by(year) %>%
@@ -15,16 +35,18 @@ totalEmisionsPerYear <- NEI %>%
 
 atx <- seq(0, max(totalEmisionsPerYear$totalEmissions), length.out = 5 )
 barplot(totalEmisionsPerYear$totalEmissions,
-        horiz=TRUE,
-        names.arg=totalEmisionsPerYear$year,
+        horiz = TRUE,
+        names.arg = totalEmisionsPerYear$year,
         xaxt = "n",
         col = c(2:5),
-        main="Total PM2.5 emissions per year",
-        xlab = "Total PM2.5 emissions in tons"
+        main = expression("Total PM"[2.5] * " emissions per year"),
+        xlab = "Total emissions (in tons)"
         )
-axis(1, at=atx, labels=format(atx, scientific=FALSE), hadj=0.5, las=1)
+axis(1, at = atx, labels = format(atx, scientific = FALSE), hadj = 0.5, las = 1)
+
+dev.off()
+
 
 # Answer: The total emissions from PM2.5 have significantly decreased 
 # in the United States from 1999 to 2008.
 
-dev.off()
