@@ -35,6 +35,7 @@ NEI %>%
   select(Emissions, type, year) %>%
   group_by(year, type) %>%
   summarise(totalEmissions = sum(Emissions)) %>%
+  ungroup(year) %>%
   mutate(Year = factor(year),
          Emissions = totalEmissions,
          Type = factor(type)) %>%

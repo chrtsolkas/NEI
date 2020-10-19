@@ -35,6 +35,7 @@ SCC %>%
   inner_join( NEI, by = "SCC") %>%
   group_by(year) %>%
   summarise(totalEmissions = sum(Emissions)) %>%
+  ungroup(year) %>%
   mutate(Year = factor(year),
          Emissions = totalEmissions) %>%
   ggplot(aes(x = Year, y = format(Emissions, scientific = FALSE), fill = Year)) +

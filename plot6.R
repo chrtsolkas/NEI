@@ -36,6 +36,7 @@ Baltimore <- SCC %>%
   filter(fips == "24510") %>%
   group_by(year) %>%
   summarise(totalEmissions = sum(Emissions)) %>%
+  ungroup(year) %>%
   mutate(Year = factor(year),
          Emissions = totalEmissions,
          City = "Baltimore")
@@ -47,6 +48,7 @@ LA <- SCC %>%
   filter(fips == "06037") %>%
   group_by(year) %>%
   summarise(totalEmissions = sum(Emissions)) %>%
+  ungroup(year) %>%
   mutate(Year = factor(year),
          Emissions = totalEmissions,
          City = "Los Angeles")
@@ -54,7 +56,7 @@ LA <- SCC %>%
 bind_rows(Baltimore, LA) %>%
   ggplot(aes(x=Year, y=format(Emissions, scientific = FALSE), fill = City)) +
   labs(x = "Year", y = "Total emissions from motor vehicle sources (in tons)", 
-       title = expression("Total PM"[2.5] * " emission from motor vehicle sources in Baltimore versus Los Angeles")) +
+       title = expression("Baltimore City versus Los Angeles City - Total PM"[2.5] * " emission from motor vehicle sources")) +
   geom_bar(stat = "identity", position = position_dodge()) +
   theme_minimal()
 
